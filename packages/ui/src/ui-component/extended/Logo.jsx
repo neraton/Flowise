@@ -1,5 +1,5 @@
-import logo from '@/assets/images/flowise_logo.png'
-import logoDark from '@/assets/images/flowise_logo_dark.png'
+import logo from '@/assets/images/neraton_purple_logo.svg'
+import logoDark from '@/assets/images/neraton_white_logo.svg'
 
 import { useSelector } from 'react-redux'
 

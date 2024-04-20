@@ -1,6 +1,7 @@
 /* eslint-disable */
-import { Entity, Column, CreateDateColumn, PrimaryGeneratedColumn, Index } from 'typeorm'
+import { Entity, Column, CreateDateColumn, PrimaryGeneratedColumn, Index, BeforeInsert } from 'typeorm'
 import { IChatMessage, MessageType } from '../../Interface'
+import { sessionNamespace } from '../../utils/neraton'
 
 @Entity()
 export class ChatMessage implements IChatMessage {
@@ -47,4 +48,13 @@ export class ChatMessage implements IChatMessage {
 
     @Column({ nullable: true, type: 'text' })
     leadEmail?: string
+    
+    // NERATON: Supabase RLS
+    @Column({ type: 'uuid' })
+    neraton_user_id: string
+
+    @BeforeInsert()
+    setUserId() {
+        this.neraton_user_id = sessionNamespace.get('session').user.id
+    }
 }

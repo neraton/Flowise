@@ -1,6 +1,7 @@
 /* eslint-disable */
-import { Entity, Column, CreateDateColumn, UpdateDateColumn, PrimaryGeneratedColumn } from 'typeorm'
+import { Entity, Column, CreateDateColumn, UpdateDateColumn, PrimaryGeneratedColumn, BeforeInsert } from 'typeorm'
 import { IAssistant } from '../../Interface'
+import { sessionNamespace } from '../../utils/neraton'
 
 @Entity()
 export class Assistant implements IAssistant {
@@ -23,4 +24,13 @@ export class Assistant implements IAssistant {
     @Column({ type: 'timestamp' })
     @UpdateDateColumn()
     updatedDate: Date
+
+    // NERATON: Supabase RLS
+    @Column({ type: 'uuid' })
+    neraton_user_id: string
+
+    @BeforeInsert()
+    setUserId() {
+        this.neraton_user_id = sessionNamespace.get('session').user.id
+    }
 }

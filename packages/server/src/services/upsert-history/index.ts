@@ -39,6 +39,8 @@ const getAllUpsertHistory = async (
                 date: sortOrder === 'DESC' ? 'DESC' : 'ASC'
             }
         })
+
+        // @ts-ignore
         upsertHistory = upsertHistory.map((hist) => {
             return {
                 ...hist,

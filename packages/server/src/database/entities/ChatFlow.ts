@@ -1,6 +1,7 @@
 /* eslint-disable */
-import { Entity, Column, CreateDateColumn, UpdateDateColumn, PrimaryGeneratedColumn } from 'typeorm'
+import { Entity, Column, CreateDateColumn, UpdateDateColumn, PrimaryGeneratedColumn, BeforeInsert } from 'typeorm'
 import { IChatFlow } from '../../Interface'
+import { sessionNamespace } from '../../utils/neraton'
 
 @Entity()
 export class ChatFlow implements IChatFlow {
@@ -44,4 +45,13 @@ export class ChatFlow implements IChatFlow {
 
     @Column({ nullable: true, type: 'text' })
     category?: string
+
+    // NERATON: Supabase RLS
+    @Column({ type: 'uuid' })
+    neraton_user_id: string
+
+    @BeforeInsert()
+    setUserId() {
+        this.neraton_user_id = sessionNamespace.get('session').user.id
+    }
 }

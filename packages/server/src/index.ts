@@ -21,6 +21,9 @@ import { Telemetry } from './utils/telemetry'
 import flowiseApiV1Router from './routes'
 import errorHandlerMiddleware from './middlewares/errors'
 
+import cookieParser from 'cookie-parser'
+import { initRLSTables, injectQueryRunnerAugmentation, neratonMiddleware } from './utils/neraton'
+
 declare global {
     namespace Express {
         interface Request {
@@ -49,6 +52,10 @@ export class App {
 
             // Run Migrations Scripts
             await this.AppDataSource.runMigrations({ transaction: 'each' })
+
+            // NERATON: Run table augmentation for Supabase RLS
+            await initRLSTables(this.AppDataSource)
+            injectQueryRunnerAugmentation(this.AppDataSource)
 
             // Initialize nodes pool
             this.nodesPool = new NodesPool()
@@ -100,6 +107,10 @@ export class App {
                 next()
             }
         })
+
+        // NERATON: Cookie parser and middleware
+        this.app.use(cookieParser())
+        this.app.use(/^\/(?!assets|favicon\.ico).*/, neratonMiddleware)
 
         // Switch off the default 'X-Powered-By: Express' header
         this.app.disable('x-powered-by')
