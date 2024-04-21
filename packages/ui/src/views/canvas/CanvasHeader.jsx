@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { useEffect, useRef, useState } from 'react'
 
@@ -8,7 +8,7 @@ import { useTheme } from '@mui/material/styles'
 import { Avatar, Box, ButtonBase, Typography, Stack, TextField } from '@mui/material'
 
 // icons
-import { IconSettings, IconChevronLeft, IconDeviceFloppy, IconPencil, IconCheck, IconX, IconCode } from '@tabler/icons-react'
+import { IconSettings, IconChevronLeft, IconDeviceFloppy, IconPencil, IconCheck, IconX, IconCode, IconShare } from '@tabler/icons-react'
 
 // project imports
 import Settings from '@/views/settings'
@@ -325,6 +325,27 @@ const CanvasHeader = ({ chatflow, handleSaveFlow, handleDeleteFlow, handleLoadFl
                 </Stack>
                 <Box>
                     {chatflow?.id && (
+                        <ButtonBase title='Share with the marketplace' sx={{ borderRadius: '50%', mr: 2 }}>
+                            <Avatar
+                                variant='rounded'
+                                sx={{
+                                    ...theme.typography.commonAvatar,
+                                    ...theme.typography.mediumAvatar,
+                                    transition: 'all .2s ease-in-out',
+                                    background: theme.palette.canvasHeader.deployLight,
+                                    color: theme.palette.canvasHeader.deployDark,
+                                    '&:hover': {
+                                        background: theme.palette.canvasHeader.deployDark,
+                                        color: theme.palette.canvasHeader.deployLight
+                                    }
+                                }}
+                                color='inherit'
+                            >
+                                <IconShare stroke={1.5} size='1.3rem' />
+                            </Avatar>
+                        </ButtonBase>
+                    )}
+                    {/* {chatflow?.id && (
                         <ButtonBase title='API Endpoint' sx={{ borderRadius: '50%', mr: 2 }}>
                             <Avatar
                                 variant='rounded'
@@ -345,7 +366,7 @@ const CanvasHeader = ({ chatflow, handleSaveFlow, handleDeleteFlow, handleLoadFl
                                 <IconCode stroke={1.5} size='1.3rem' />
                             </Avatar>
                         </ButtonBase>
-                    )}
+                    )} */}
                     <ButtonBase title='Save Chatflow' sx={{ borderRadius: '50%', mr: 2 }}>
                         <Avatar
                             variant='rounded'

@@ -59,22 +59,22 @@ const dashboard = {
             icon: icons.IconVariable,
             breadcrumbs: true
         },
-        {
-            id: 'apikey',
-            title: 'API Keys',
-            type: 'item',
-            url: '/apikey',
-            icon: icons.IconKey,
-            breadcrumbs: true
-        },
-        {
-            id: 'documents',
-            title: 'Document Stores',
-            type: 'item',
-            url: '/document-stores',
-            icon: icons.IconFiles,
-            breadcrumbs: true
-        }
+        // {
+        //     id: 'apikey',
+        //     title: 'API Keys',
+        //     type: 'item',
+        //     url: '/apikey',
+        //     icon: icons.IconKey,
+        //     breadcrumbs: true
+        // },
+        // {
+        //     id: 'documents',
+        //     title: 'Document Stores',
+        //     type: 'item',
+        //     url: '/document-stores',
+        //     icon: icons.IconFiles,
+        //     breadcrumbs: true
+        // }
     ]
 }
 

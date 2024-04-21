@@ -49,10 +49,10 @@ const MainRoutes = {
             path: '/marketplaces',
             element: <Marketplaces />
         },
-        {
-            path: '/apikey',
-            element: <APIKey />
-        },
+        // {
+        //     path: '/apikey',
+        //     element: <APIKey />
+        // },
         {
             path: '/tools',
             element: <Tools />
