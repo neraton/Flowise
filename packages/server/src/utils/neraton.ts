@@ -2,11 +2,21 @@
 
 import { DataSource, QueryResult, QueryRunner, ReplicationMode } from 'typeorm'
 import { Request, Response, NextFunction } from 'express'
+import chatflowsService from '../services/chatflows'
+import assistantsService from '../services/assistants'
+import toolsService from '../services/tools'
 import { createServerClient, CookieOptions } from '@supabase/ssr'
 import clsHooked from 'cls-hooked'
+import { StatusCodes } from 'http-status-codes'
 
-const supabasePublicKey = process.env.PUBLIC_SUPABASE_ANON_KEY || ''
-const supabaseUrl = process.env.PUBLIC_SUPABASE_URL || ''
+const SUPABASE_PUBLIC_KEY = process.env.PUBLIC_SUPABASE_ANON_KEY || ''
+const SUPABASE_URL = process.env.PUBLIC_SUPABASE_URL || ''
+
+const STARTER_PLAN_NAME = 'Starter'
+const STARTER_PLAN_QUOTA = 5
+const PRO_PLAN_NAME = 'Pro'
+const PRO_PLAN_QUOTA = 25
+const QUOTA_EXCEEDED = 'Subscription limit exceeded. Upgrade your subscription, or delete some existing items first.'
 
 export const sessionNamespace = clsHooked.getNamespace('session') || clsHooked.createNamespace('session')
 
@@ -101,7 +111,7 @@ export function neratonMiddleware(req: Request, res: Response, next: NextFunctio
         'https://www.neraton.com/pricing?status=No%20subscription&status_description=Start%20a%20subscription%20to%20resume%20your%20project%2E'
 
     // Create the server client.
-    const supabase = createServerClient(supabaseUrl, supabasePublicKey, {
+    const supabase = createServerClient(SUPABASE_URL, SUPABASE_PUBLIC_KEY, {
         cookies: {
             get(name: string) {
                 return req.cookies[name]
@@ -137,7 +147,68 @@ export function neratonMiddleware(req: Request, res: Response, next: NextFunctio
                             .maybeSingle()
                             .then(({ data: subscription, error }) => {
                                 if (subscription && !error) {
-                                    next()
+                                    // Check for hitting limitations on subscription type.
+                                    const isPro = subscription.prices?.products?.name == PRO_PLAN_NAME
+                                    const entityLimit = isPro ? PRO_PLAN_QUOTA : STARTER_PLAN_QUOTA
+                                    if (req.method == 'POST') {
+                                        // Check how many they have.
+                                        let isRunningCheck = false
+                                        if (req.originalUrl.indexOf('/chatflows') != -1) {
+                                            isRunningCheck = true
+                                            chatflowsService
+                                                .getAllChatflows()
+                                                .then((chatflows) => {
+                                                    if (chatflows.length >= entityLimit) {
+                                                        res.status(StatusCodes.UNPROCESSABLE_ENTITY).send({ message: QUOTA_EXCEEDED })
+                                                        return
+                                                    } else {
+                                                        next()
+                                                    }
+                                                })
+                                                .catch((ex) => {
+                                                    next(ex)
+                                                })
+                                        }
+                                        if (req.originalUrl.indexOf('/assistants') != -1) {
+                                            isRunningCheck = true
+                                            assistantsService
+                                                .getAllAssistants()
+                                                .then((assistants) => {
+                                                    if (assistants.length >= entityLimit) {
+                                                        res.status(StatusCodes.UNPROCESSABLE_ENTITY).send({ message: QUOTA_EXCEEDED })
+                                                        return
+                                                    } else {
+                                                        next()
+                                                    }
+                                                })
+                                                .catch((ex) => {
+                                                    next(ex)
+                                                })
+                                        }
+                                        if (!isPro) {
+                                            if (req.originalUrl.indexOf('/tools') != -1) {
+                                                isRunningCheck = true
+                                                toolsService
+                                                    .getAllTools()
+                                                    .then((tools) => {
+                                                        if (tools.length >= entityLimit) {
+                                                            res.status(StatusCodes.UNPROCESSABLE_ENTITY).send({ message: QUOTA_EXCEEDED })
+                                                        } else {
+                                                            next()
+                                                        }
+                                                    })
+                                                    .catch((ex) => {
+                                                        next(ex)
+                                                    })
+                                            }
+                                        }
+
+                                        if (!isRunningCheck) {
+                                            next()
+                                        }
+                                    } else {
+                                        next()
+                                    }
                                 } else {
                                     console.log('[Neraton] No subscription!')
                                     res.redirect(pricingUrl)
