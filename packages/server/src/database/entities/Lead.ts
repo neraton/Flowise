@@ -1,6 +1,7 @@
 /* eslint-disable */
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm'
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, BeforeInsert } from 'typeorm'
 import { ILead } from '../../Interface'
+import { sessionNamespace } from '../../utils/neraton'
 
 @Entity()
 export class Lead implements ILead {
@@ -24,4 +25,13 @@ export class Lead implements ILead {
 
     @CreateDateColumn()
     createdDate: Date
+
+    // NERATON: Supabase RLS
+    @Column({ type: 'uuid' })
+    neraton_user_id: string
+
+    @BeforeInsert()
+    setUserId() {
+        this.neraton_user_id = sessionNamespace.get('session').user.id
+    }
 }

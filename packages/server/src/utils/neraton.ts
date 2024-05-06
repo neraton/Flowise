@@ -29,7 +29,8 @@ export async function initRLSTables(dataSource: DataSource) {
         'credential',
         'tool',
         'upsert_history',
-        'variable'
+        'variable',
+        'lead'
     ]
     const queryRunner = dataSource.createQueryRunner()
 
