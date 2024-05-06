@@ -12,7 +12,6 @@ import { StatusCodes } from 'http-status-codes'
 const SUPABASE_PUBLIC_KEY = process.env.PUBLIC_SUPABASE_ANON_KEY || ''
 const SUPABASE_URL = process.env.PUBLIC_SUPABASE_URL || ''
 
-const STARTER_PLAN_NAME = 'Starter'
 const STARTER_PLAN_QUOTA = 5
 const PRO_PLAN_NAME = 'Pro'
 const PRO_PLAN_QUOTA = 25

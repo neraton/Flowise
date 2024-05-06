@@ -151,7 +151,7 @@ export default class Start extends Command {
         if (flags.S3_STORAGE_ACCESS_KEY_ID) process.env.S3_STORAGE_ACCESS_KEY_ID = flags.S3_STORAGE_ACCESS_KEY_ID
         if (flags.S3_STORAGE_SECRET_ACCESS_KEY) process.env.S3_STORAGE_SECRET_ACCESS_KEY = flags.S3_STORAGE_SECRET_ACCESS_KEY
         if (flags.S3_STORAGE_REGION) process.env.S3_STORAGE_REGION = flags.S3_STORAGE_REGION
-        
+
         // NERATON: Flags for Supabase.
         if (flags.PUBLIC_SUPABASE_ANON_KEY) process.env.PUBLIC_SUPABASE_ANON_KEY = flags.PUBLIC_SUPABASE_ANON_KEY
         if (flags.PUBLIC_SUPABASE_URL) process.env.PUBLIC_SUPABASE_URL = flags.PUBLIC_SUPABASE_URL
