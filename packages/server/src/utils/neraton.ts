@@ -30,7 +30,9 @@ export async function initRLSTables(dataSource: DataSource) {
         'tool',
         'upsert_history',
         'variable',
-        'lead'
+        'lead',
+        'document_store',
+        'document_store_file_chunk'
     ]
     const queryRunner = dataSource.createQueryRunner()
 
