@@ -110,7 +110,7 @@ export class App {
 
         // NERATON: Cookie parser and middleware
         this.app.use(cookieParser())
-        this.app.use(/^\/(?!assets|.*favicon\.ico|.*\/node-icon\/).*/, neratonMiddleware)
+        this.app.use(/^\/(?!assets|.*favicon\.ico|.*\/node-icon\/|.*\/components-credentials-icon\/).*/, neratonMiddleware)
 
         // Switch off the default 'X-Powered-By: Express' header
         this.app.disable('x-powered-by')
