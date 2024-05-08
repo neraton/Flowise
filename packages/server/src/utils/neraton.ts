@@ -5,6 +5,7 @@ import { Request, Response, NextFunction } from 'express'
 import chatflowsService from '../services/chatflows'
 import assistantsService from '../services/assistants'
 import toolsService from '../services/tools'
+import logger from '../utils/logger'
 import { createServerClient, CookieOptions } from '@supabase/ssr'
 import clsHooked from 'cls-hooked'
 import { StatusCodes } from 'http-status-codes'
@@ -135,7 +136,7 @@ export function neratonMiddleware(req: Request, res: Response, next: NextFunctio
         .getSession()
         .then((sessionData) => {
             if (sessionData?.error) {
-                console.log(`[Neraton] Session error: ${sessionData?.error}`)
+                logger.info(`[Neraton] Session error: ${sessionData?.error}`)
             } else {
                 if (sessionData?.data?.session) {
                     sessionNamespace.run(() => {
@@ -212,19 +213,19 @@ export function neratonMiddleware(req: Request, res: Response, next: NextFunctio
                                         next()
                                     }
                                 } else {
-                                    console.log('[Neraton] No subscription!')
+                                    logger.info('[Neraton] No subscription!')
                                     res.redirect(pricingUrl)
                                 }
                             })
                     })
                 } else {
-                    console.log(`[Neraton] Session not found!`)
+                    logger.info(`[Neraton] Session not found!`)
                     res.redirect(redirectUrl)
                 }
             }
         })
         .catch((ex) => {
-            console.log(`[Neraton] Session exception: ${ex}`)
+            logger.info(`[Neraton] Session exception: ${ex}`)
             res.redirect(redirectUrl)
         })
 }
